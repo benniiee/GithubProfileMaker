@@ -28,6 +28,8 @@ A modern, visual, Notion-inspired **GitHub Profile README Builder** built as a p
 - [Code Conventions & Performance Guidelines](#-code-conventions--performance-guidelines)
 - [Deployment](#-deployment)
 - [Author & Credits](#-author--credits)
+- [Author](#-author)
+- [Credits & Acknowledgements](#-credits--acknowledgements)
 - [License](#-license)
 
 ---
@@ -277,8 +279,26 @@ Because the project is 100% static client-side, the generated `dist/` folder can
 ---
 
 ## 👨‍💻 Author & Credits
+## 👨‍💻 Author
 
 Created and maintained by **[benniiee](https://github.com/benniiee)**.
+
+---
+
+## 💖 Credits & Acknowledgements
+
+This project is made possible thanks to these amazing open-source libraries, APIs, and community tools:
+
+- **[Shields.io](https://shields.io)** — Metadata badges for open-source projects.
+- **[Capsule Render](https://github.com/kyechan99/capsule-render)** by [@kyechan99](https://github.com/kyechan99) — Dynamic waving curve SVG header generator.
+- **[GitHub Readme Stats](https://github.com/anuraghazra/github-readme-stats)** by [@anuraghazra](https://github.com/anuraghazra) — Dynamically generated GitHub stats and top languages cards.
+- **[GitHub Readme Streak Stats](https://github.com/DenverCoder1/github-readme-streak-stats)** by [@DenverCoder1](https://github.com/DenverCoder1) — Contribution streak counters.
+- **[Readme Typing SVG](https://github.com/DenverCoder1/readme-typing-svg)** by [@DenverCoder1](https://github.com/DenverCoder1) — Animated typing effect SVGs.
+- **[GitHub Profile Views Counter](https://github.com/antonkomarev/github-profile-views-counter)** by [@antonkomarev](https://github.com/antonkomarev) — Profile view counter badges.
+- **[Simple Icons](https://simpleicons.org)** — SVG brand icons for popular tech stacks and developer tools.
+- **[@dnd-kit](https://dndkit.com)** — Performant, lightweight drag-and-drop toolkit for React.
+- **[Lucide Icons](https://lucide.dev)** — Beautiful and consistent open-source icon set.
+- **[Tailwind CSS](https://tailwindcss.com)** & **[Vite](https://vitejs.dev)** — Modern, ultra-fast frontend styling and build tooling.
 
 ---
 
