@@ -1,0 +1,121 @@
+# UI/UX design reference — GitHub README builder
+
+Read this before writing any component. It exists so the app looks like it was designed by someone with a point of view, not generated from a template. Every choice below is justified by what this specific tool is: a dual-pane, block-based editor used by developers to build something they'll put their name on.
+
+---
+
+## 1. The one rule everything else follows
+
+Design decisions come from the subject, not from habit. This is a developer tool for building a developer artifact (a README). The audience already lives in code editors, terminals, and GitHub itself. They will notice — consciously or not — if the UI looks like a generic SaaS landing page kit instead of a tool built by people who understand their world.
+
+Concretely: this app should feel closer to **Linear, Vercel, Raycast, and GitHub's own UI** than to a marketing site or a no-code form builder. Precise, quiet, monochrome-leaning, information-dense where it needs to be, empty where it doesn't.
+
+---
+
+## 2. Traits that mark a UI as AI-generated — do not default to these
+
+These show up constantly in generated interfaces regardless of what the product actually is. Treat every one as a thing to actively avoid, not a neutral default:
+
+- **Warm cream background (~#F4F1EA) + serif display + terracotta accent (~#D97757).** This is the single most common generated-look tell right now. Do not use this palette for this app.
+- **Near-black background with one bright acid-green or vermilion accent.** Also overused.
+- **The SaaS-card kit**: everything chopped into identically rounded cards, one border-radius applied everywhere regardless of hierarchy, the same soft gray shadow (`rgba(0,0,0,.1)`) under every card, gradient washes used as pure decoration.
+- **Template chrome**: tracked-out ALL-CAPS eyebrow labels above every heading; meta text joined with middle dots (`A · B · C`); labels styled as `WORD — fragment` with a spaced em dash; a monospace font slapped on small data labels for no functional reason; a `→` glued onto every button and link.
+- **Numbered markers (01 / 02 / 03)** on content that isn't actually a sequence. This app has real sequences (the Experience timeline, ordered blocks) — number those. Don't number things that aren't ordered, like a settings popover's options.
+- **Bolding or italicizing a single word in a heading** for emphasis. **All-caps for every label.** Unnecessary typographic eyebrows above content that's already self-explanatory.
+- **Fade-and-slide-up entrance animation on every section, hover-lift on every card.** This is the generic default and reads as templated the instant more than one element does it.
+
+If you're about to reach for any of these, stop and ask whether it's actually the right choice for *this* screen, or just the path of least resistance.
+
+---
+
+## 3. Reference points — study these, don't copy them
+
+These are real products with distinct, deliberate design languages relevant to a block-based dev tool. Pull principles, not pixels.
+
+**Linear** — the clearest reference for this app's *tone*. Near-monochrome UI (grays doing almost all the work), a single restrained accent color used sparingly and consistently for interactive state, dense information without feeling cluttered, keyboard-first interactions treated as first-class (not an afterthought bolted onto a mouse-driven UI). Study how little color Linear actually uses — most of the interface is grayscale, and color appears only where it's meaningful (status, priority, active state).
+
+**Vercel** — near-monochrome black/white/gray palette, Geist typeface, sharp geometric precision, generous whitespace used deliberately rather than as filler. Relevant here because this app *deploys to* Vercel — visual kinship isn't required, but Vercel is a good example of a dev-tool brand that never reaches for decoration it doesn't need.
+
+**Notion** — the direct UX ancestor of this app's core interaction model. Study specifically: the `+` block-insertion affordance that only appears on hover at the cursor's current line, the six-dot drag handle that appears on hover to the left of a block (not always visible — visible on intent), the block-type picker as a filterable command menu rather than a dropdown, and how settings for a block live in a lightweight popover anchored to that block rather than a separate panel. Your nested drag-and-drop and per-block settings popover should feel like this family of interaction, not like a form builder's static "Edit" button.
+
+**Raycast** — reference for popovers, command palettes, and how a "settings" surface can feel fast and native rather than like a modal dialog bolted onto a webpage. Blur/glass treatment used sparingly and only on floating surfaces (popovers, command palette), never on the base UI.
+
+**GitHub itself** — the most important reference, because the *output* of this tool has to live inside GitHub's own rendering of markdown. Study GitHub's own information density: monospace used functionally (code, usernames, technical values) not decoratively, hairline borders instead of heavy shadows, badges and pills that are compact and informational rather than decorative.
+
+**shadcn/ui** (already your component base) — its whole design philosophy is restraint: no unnecessary shadow, radius, or color by default. Don't fight it by layering generic SaaS polish on top; extend it in the same spirit.
+
+---
+
+## 4. Design tokens for this app
+
+Fill this in once, early, and keep every component honest to it. Don't let individual screens invent their own colors or radii.
+
+**Color** — lean grayscale with one working accent, not a marketing palette:
+- Base surfaces: near-white / near-black neutrals (not pure `#FFF`/`#000` — pick a warm-neutral or cool-neutral gray family and stay in it, e.g. Vercel's or Linear's approach of a slightly tinted gray scale rather than true black).
+- One accent color, used only for: primary actions, active/selected state, and drag-in-progress feedback. Nowhere else. Resist adding a second accent for "variety."
+- Semantic colors (error, success, warning) stay desaturated until they're actually needed (a real error state), not used decoratively.
+
+**Type** — two roles, not two decorative typefaces:
+- UI/body: a clean grotesk (Inter, Geist, or similar) — this is a tool, not an editorial page. Don't reach for a serif display face; it fights the dev-tool register this app lives in.
+- Monospace: reserved for actual technical content — generated markdown preview, code-like values (usernames, badge URLs) — not for stylistic flourish on regular labels.
+- Keep a tight, deliberate type scale (a handful of sizes, not a dozen). Settings popover text, block titles, and body copy should each have one consistent size — don't let sizes drift screen to screen.
+
+**Layout** — the dual-pane structure is the spine of the whole app:
+- Left pane (builder) and right pane (live preview) should feel like two views of the same data, not two unrelated panels — consistent gutter, consistent vertical rhythm, so a block in the left pane and its rendered output in the right pane read at roughly the same vertical position where possible.
+- Left-align almost everything. This is a working tool, not a marketing page — center-aligned hero treatment has no place here except perhaps the very first empty-state screen.
+- Radius: pick one small radius for interactive controls (buttons, inputs) and one slightly larger radius for containers (blocks, popovers, cards). Two radii total, applied consistently — not "whatever felt right per component."
+
+**Principles** — the short version to hold yourself to:
+1. Grayscale does the work; color is meaningful, not decorative.
+2. Every visual affordance (drag handle, `+` button, settings gear) appears on hover/intent, not permanently cluttering the canvas — mirror Notion's restraint here.
+3. The output (rendered markdown) is the real product. The builder UI should never visually upstage the preview pane.
+
+---
+
+## 5. Component-level guidance specific to this app
+
+**Block list (macro drag-and-drop)**
+- Drag handle: six-dot icon, hover-only visibility, left-aligned to the block, not a full-width "grab anywhere" surface — grabbing anywhere makes text-selection and clicking inside the block unreliable.
+- Dragging state: the block being dragged gets a subtle elevation (thin border + very light shadow, not a heavy drop shadow), and a thin insertion-line indicator shows where it'll land — not a ghost outline of the whole block, which is noisier than necessary.
+- Empty canvas state: a single, calm "Add a block" affordance — not a large illustration or marketing-style empty state graphic. This is a tool; the empty state should invite the very next action, plainly.
+
+**Item list within a block (micro drag-and-drop)**
+- Slightly smaller/lighter drag handle than the macro one, so the visual hierarchy between "reordering blocks" and "reordering items inside a block" stays legible without needing a label to explain it.
+
+**Block settings popover**
+- Anchor it to the block, don't center it in a modal — modals interrupt the builder/preview relationship this app depends on. Popover content: alignment, header toggle, badge style — grouped by what they affect, not just stacked in the order they were built.
+
+**Live preview pane**
+- No chrome trying to look like an actual GitHub page (no fake browser window, no fake profile header). Render the markdown plainly, close to how GitHub itself renders it, so what the user sees is trustworthy — a stylized "preview of a preview" undermines the one thing this pane needs to do.
+
+**Export controls (Copy / Download)**
+- Button copy is literal and active: "Copy markdown," "Download README.md" — not "Export" or "Submit." Confirm success in the interface's own voice: a brief "Copied" state on the button itself, not a separate toast stack, for an action this lightweight.
+
+---
+
+## 6. Writing inside the product
+
+- Name things the way a developer thinks about them: "Blocks," "Preview," "Copy markdown" — not internal implementation names ("Nodes," "Render tree," "Serialize").
+- Active voice, plain verbs. A button that adds a block says "Add block," not "New" or "Create."
+- Empty states and errors explain what to do next, in the product's own voice — no apologizing, no vague "Something went wrong."
+- No filler copy. If a label doesn't help someone use the tool, cut it.
+
+---
+
+## 7. Motion
+
+- One deliberate motion moment is worth more than animation on everything. Candidates worth animating: the drag-and-drop reorder itself (it needs motion to be legible), the block-insertion moment, the popover open/close.
+- Skip: entrance animations on page load, hover-lift on every card, animated gradients. None of these serve a tool a developer will use daily — repeated motion on a daily-use tool becomes friction, not delight.
+- Respect `prefers-reduced-motion` throughout.
+
+---
+
+## 8. Before calling anything done
+
+Run this checklist against the actual screen, not the plan:
+- [ ] Does any part of this match section 2's "traits to avoid" list? If yes, was that a deliberate choice for this specific screen, or just the default?
+- [ ] Is color used only where it's meaningful (state, action, selection) — not decoratively?
+- [ ] Are there two radii total, applied consistently, not "whichever felt right per component"?
+- [ ] Do affordances (drag handles, add buttons, settings gears) appear on hover/intent rather than cluttering the canvas permanently?
+- [ ] Does the live preview pane look like a trustworthy rendering of the actual markdown, not a stylized mockup of one?
+- [ ] Would a developer who uses Linear or Raycast daily recognize this as belonging to that same family of tool?
