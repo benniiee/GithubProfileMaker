@@ -7,8 +7,6 @@ export const Footer = () => {
       <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-2.5">
         <div className="flex items-center gap-1.5">
           <span>GitHub Profile README Builder</span>
-          <span>&bull;</span>
-          <span>Open Source</span>
         </div>
 
         <div className="flex items-center gap-1.5">
