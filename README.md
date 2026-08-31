@@ -27,7 +27,6 @@ A modern, visual, Notion-inspired **GitHub Profile README Builder** built as a p
   - [Compilation Pipeline](#compilation-pipeline)
 - [Code Conventions & Performance Guidelines](#-code-conventions--performance-guidelines)
 - [Deployment](#-deployment)
-- [Author & Credits](#-author--credits)
 - [Author](#-author)
 - [Credits & Acknowledgements](#-credits--acknowledgements)
 - [License](#-license)
@@ -278,7 +277,6 @@ Because the project is 100% static client-side, the generated `dist/` folder can
 
 ---
 
-## 👨‍💻 Author & Credits
 ## 👨‍💻 Author
 
 Created and maintained by **[benniiee](https://github.com/benniiee)**.
