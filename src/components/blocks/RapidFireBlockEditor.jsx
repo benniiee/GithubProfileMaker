@@ -29,7 +29,7 @@ const SortableRapidFireItem = React.memo(function SortableRapidFireItem({ item, 
     <div
       ref={setNodeRef}
       style={style}
-      className="flex items-start gap-2 p-3 rounded-lg border bg-background shadow-2xs hover:border-border transition-colors group"
+      className="flex items-start gap-3 p-3.5 rounded-xl border border-border bg-background shadow-2xs hover:border-border/90 transition-colors group"
     >
       <button
         {...attributes}
@@ -37,18 +37,18 @@ const SortableRapidFireItem = React.memo(function SortableRapidFireItem({ item, 
         className="text-muted-foreground/40 hover:text-foreground cursor-grab active:cursor-grabbing p-1 mt-1 shrink-0"
         title="Drag to reorder"
       >
-        <GripVertical className="w-3.5 h-3.5" />
+        <GripVertical className="w-4 h-4" />
       </button>
 
-      <div className="flex-1 min-w-0 space-y-2">
-        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
-          <div className="flex items-center gap-1.5 shrink-0">
-            <span className="text-[11px] font-medium text-muted-foreground">Bullet:</span>
+      <div className="flex-1 min-w-0 space-y-2.5">
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5">
+          <div className="flex items-center gap-2 shrink-0">
+            <span className="text-xs font-semibold text-muted-foreground">Bullet:</span>
             <Input
               value={item.icon || '-'}
               onChange={(e) => onUpdate({ icon: e.target.value })}
               placeholder="-"
-              className="h-7 w-12 text-center text-xs font-mono"
+              className="w-14 text-center font-mono text-sm"
             />
           </div>
           <div className="flex-1 min-w-0">
@@ -56,7 +56,7 @@ const SortableRapidFireItem = React.memo(function SortableRapidFireItem({ item, 
               value={item.label || ''}
               onChange={(e) => onUpdate({ label: e.target.value })}
               placeholder="Prompt Label (e.g. Ask me about)"
-              className="h-7 text-xs font-semibold"
+              className="text-sm font-semibold"
             />
           </div>
         </div>
@@ -66,7 +66,7 @@ const SortableRapidFireItem = React.memo(function SortableRapidFireItem({ item, 
             value={item.text || ''}
             onChange={(e) => onUpdate({ text: e.target.value })}
             placeholder="Answer / Value..."
-            className="h-7.5 text-xs font-medium"
+            className="text-sm"
           />
         </div>
       </div>
@@ -75,29 +75,29 @@ const SortableRapidFireItem = React.memo(function SortableRapidFireItem({ item, 
         variant="ghost"
         size="icon"
         onClick={onRemove}
-        className="h-7 w-7 text-muted-foreground hover:text-red-500 shrink-0 mt-0.5"
-        title="Delete prompt"
+        className="h-8 w-8 text-muted-foreground hover:text-red-500 shrink-0 mt-0.5"
+        title="Remove item"
       >
-        <Trash2 className="w-3.5 h-3.5" />
+        <Trash2 className="w-4 h-4" />
       </Button>
     </div>
   );
 });
 
 export const RapidFireBlockEditor = ({ block, onUpdate }) => {
-  const addItem = (preset) => {
-    const newItem = preset
+  const addItem = (presetObj = null) => {
+    const newItem = presetObj
       ? {
           id: generateId('rf'),
-          icon: preset.icon || '-',
-          label: preset.label,
-          text: preset.defaultText,
+          icon: presetObj.icon,
+          label: presetObj.label,
+          text: presetObj.defaultText,
         }
       : {
           id: generateId('rf'),
           icon: '-',
-          label: 'Custom Prompt',
-          text: '',
+          label: 'Topic',
+          text: 'Details...',
         };
 
     onUpdate({
@@ -118,10 +118,10 @@ export const RapidFireBlockEditor = ({ block, onUpdate }) => {
   };
 
   return (
-    <div className="space-y-4 text-xs">
+    <div className="space-y-4 text-sm">
       {/* Intro Tagline */}
-      <div className="p-3.5 rounded-lg border bg-card space-y-1.5">
-        <label className="block text-xs font-semibold text-foreground">
+      <div className="p-4 rounded-2xl border border-border bg-card space-y-2">
+        <label className="block text-sm font-semibold text-foreground">
           Intro Headline / Tagline Statement
         </label>
         <Textarea
@@ -129,35 +129,35 @@ export const RapidFireBlockEditor = ({ block, onUpdate }) => {
           onChange={(e) => onUpdate({ tagline: e.target.value })}
           placeholder="Passionate fullstack developer creating robust and scalable web applications..."
           rows={3}
-          className="text-xs leading-relaxed"
+          className="text-sm leading-relaxed"
         />
       </div>
 
       {/* Quick Add Presets */}
-      <div className="space-y-2.5">
+      <div className="space-y-3">
         <div className="flex items-center justify-between">
-          <label className="text-xs font-semibold text-foreground flex items-center gap-1.5">
-            <ListFilter className="w-3.5 h-3.5 text-blue-500" /> Q&A Bullet Points
+          <label className="text-sm font-semibold text-foreground flex items-center gap-1.5">
+            <ListFilter className="w-4 h-4 text-blue-500" /> Q&A Bullet Points
           </label>
-          <Button variant="outline" size="sm" onClick={() => addItem()} className="h-7 text-xs">
-            <Plus className="w-3 h-3 mr-1" /> Add Custom Prompt
+          <Button variant="outline" size="sm" onClick={() => addItem()} className="text-xs sm:text-sm font-medium">
+            <Plus className="w-4 h-4 mr-1" /> Add Custom Prompt
           </Button>
         </div>
 
-        <div className="p-2.5 rounded-lg bg-muted/40 border space-y-1.5">
-          <span className="text-[11px] font-medium text-muted-foreground block">
+        <div className="p-3.5 rounded-2xl bg-muted/40 border border-border space-y-2">
+          <span className="text-xs font-semibold text-muted-foreground block">
             Add Prompt Preset:
           </span>
-          <div className="flex flex-wrap gap-1.5">
+          <div className="flex flex-wrap gap-2">
             {COMMON_PROMPTS.map((preset) => (
               <button
                 key={preset.label}
                 type="button"
                 onClick={() => addItem(preset)}
-                className="px-2.5 py-1 rounded-md bg-background hover:bg-secondary text-[11px] font-medium border border-border text-foreground flex items-center gap-1 transition-all cursor-pointer shadow-2xs hover:border-blue-500/40"
+                className="px-3 py-1.5 rounded-xl bg-background hover:bg-secondary text-xs sm:text-sm font-medium border border-border text-foreground flex items-center gap-1.5 transition-all cursor-pointer shadow-2xs hover:border-blue-500/40"
               >
-                <Plus className="w-3 h-3 text-muted-foreground" />
-                <span className="truncate max-w-[180px]">{preset.label}</span>
+                <Plus className="w-3.5 h-3.5 text-muted-foreground" />
+                <span className="truncate max-w-[200px]">{preset.label}</span>
               </button>
             ))}
           </div>
@@ -168,7 +168,7 @@ export const RapidFireBlockEditor = ({ block, onUpdate }) => {
           items={(block.items || []).map((it) => it.id)}
           strategy={verticalListSortingStrategy}
         >
-          <div className="space-y-2">
+          <div className="space-y-2.5">
             {(block.items || []).map((item) => (
               <SortableRapidFireItem
                 key={item.id}

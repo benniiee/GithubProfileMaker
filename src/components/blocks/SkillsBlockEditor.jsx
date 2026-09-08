@@ -2,7 +2,7 @@ import React, { useState, useMemo } from 'react';
 import { Input, Button } from '../ui/Primitives';
 import { Modal, ConfirmDialog } from '../ui/Modal';
 import { generateId, buildShieldBadgeUrl, POPULAR_SKILL_BADGES, parseBulkBadges } from '../../lib/utils';
-import { Plus, Trash2, GripVertical, Search, FileText, Sparkles, X, Palette, LayoutGrid, Check } from 'lucide-react';
+import { Plus, Trash2, GripVertical, Search, FileText, Sparkles, X, Palette, LayoutGrid, Sliders, Check } from 'lucide-react';
 import { SortableContext, useSortable, rectSortingStrategy } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 
@@ -16,6 +16,11 @@ const ALL_CATEGORIES = [
   'Testing & Tooling',
   'Design & IDEs',
   'AI, ML & Data Science',
+];
+
+const SKILL_TABS = [
+  { id: 'badges', label: 'Badges & Categories', icon: LayoutGrid },
+  { id: 'display', label: 'Display & Sizing', icon: Sliders },
 ];
 
 const SortableBadgeItem = React.memo(function SortableBadgeItem({ badge, blockBadgeStyle, onUpdate, onRemove }) {
@@ -42,41 +47,41 @@ const SortableBadgeItem = React.memo(function SortableBadgeItem({ badge, blockBa
 
   return (
     <div ref={setNodeRef} style={style} className="relative group">
-      <div className="flex items-center gap-1.5 p-1 rounded-md border border-border bg-card hover:border-blue-500/60 shadow-2xs transition-colors">
+      <div className="flex items-center gap-2 p-1.5 rounded-xl border border-border bg-card hover:border-blue-500/60 shadow-2xs transition-colors">
         <button
           {...attributes}
           {...listeners}
-          className="text-muted-foreground/40 hover:text-foreground cursor-grab active:cursor-grabbing p-0.5"
+          className="text-muted-foreground/40 hover:text-foreground cursor-grab active:cursor-grabbing p-1"
           title="Drag badge to reorder"
         >
-          <GripVertical className="w-3 h-3" />
+          <GripVertical className="w-3.5 h-3.5" />
         </button>
 
-        <img src={badgeUrl} alt={badge.name} className="h-5 rounded-xs object-contain shrink-0" />
+        <img src={badgeUrl} alt={badge.name} className="h-6 rounded-xs object-contain shrink-0" />
 
         <button
           type="button"
           onClick={() => setShowEditor(!showEditor)}
-          className="text-muted-foreground/60 hover:text-foreground p-0.5 text-[10px] cursor-pointer"
+          className="text-muted-foreground/60 hover:text-foreground p-1 text-xs cursor-pointer"
           title="Edit badge styling"
         >
-          <Palette className="w-3 h-3" />
+          <Palette className="w-3.5 h-3.5" />
         </button>
 
         <button
           type="button"
           onClick={onRemove}
-          className="text-muted-foreground/40 hover:text-red-500 p-0.5 cursor-pointer"
+          className="text-muted-foreground/40 hover:text-red-500 p-1 cursor-pointer"
           title="Remove badge"
         >
-          <X className="w-3 h-3" />
+          <X className="w-3.5 h-3.5" />
         </button>
       </div>
 
       {showEditor && (
-        <div className="absolute top-full left-0 mt-1.5 w-64 p-3 rounded-lg border border-border bg-popover text-popover-foreground shadow-xl z-50 text-xs space-y-2.5 animate-in fade-in zoom-in-95">
-          <div className="flex items-center justify-between pb-1 border-b border-border/80">
-            <span className="font-semibold text-xs truncate">Edit {badge.name} Badge</span>
+        <div className="absolute top-full left-0 mt-2 w-72 p-3.5 rounded-2xl border border-border bg-popover text-popover-foreground shadow-2xl z-50 text-sm space-y-3 animate-in fade-in zoom-in-95">
+          <div className="flex items-center justify-between pb-1.5 border-b border-border/80">
+            <span className="font-semibold text-sm truncate">Edit {badge.name}</span>
             <button
               type="button"
               onClick={() => setShowEditor(false)}
@@ -86,49 +91,39 @@ const SortableBadgeItem = React.memo(function SortableBadgeItem({ badge, blockBa
             </button>
           </div>
           <div>
-            <label className="block text-[11px] text-muted-foreground mb-1">Badge Text / Label</label>
+            <label className="block text-xs font-medium text-foreground mb-1">Badge Text / Label</label>
             <Input
               value={badge.name || ''}
               onChange={(e) => onUpdate({ name: e.target.value })}
-              className="h-7 text-xs"
+              className="text-sm"
             />
           </div>
-          <div className="grid grid-cols-2 gap-2">
+          <div className="grid grid-cols-2 gap-2.5">
             <div>
-              <label className="block text-[11px] text-muted-foreground mb-1">Color</label>
-              <div className="flex items-center gap-1">
+              <label className="block text-xs font-medium text-foreground mb-1">Color</label>
+              <div className="flex items-center gap-1.5">
                 <input
                   type="color"
                   value={badge.color && badge.color.startsWith('#') ? badge.color : `#${badge.color || '20232A'}`}
                   onChange={(e) => onUpdate({ color: e.target.value.replace('#', '') })}
-                  className="w-6 h-7 rounded border border-border cursor-pointer p-0.5"
+                  className="w-8 h-8 rounded-lg border cursor-pointer p-0.5 bg-background shrink-0"
                 />
                 <Input
-                  value={badge.color || ''}
+                  value={badge.color || '20232A'}
                   onChange={(e) => onUpdate({ color: e.target.value })}
-                  placeholder="HEX"
-                  className="h-7 text-xs"
+                  className="font-mono text-xs"
                 />
               </div>
             </div>
             <div>
-              <label className="block text-[11px] text-muted-foreground mb-1">SimpleIcon Slug</label>
+              <label className="block text-xs font-medium text-foreground mb-1">Logo Slug</label>
               <Input
                 value={badge.logo || ''}
                 onChange={(e) => onUpdate({ logo: e.target.value })}
                 placeholder="slug"
-                className="h-7 text-xs"
+                className="font-mono text-xs"
               />
             </div>
-          </div>
-          <div>
-            <label className="block text-[11px] text-muted-foreground mb-1">Custom Direct Image URL</label>
-            <Input
-              value={badge.customUrl || ''}
-              onChange={(e) => onUpdate({ customUrl: e.target.value })}
-              placeholder="https://img.shields.io/..."
-              className="h-7 text-xs font-mono"
-            />
           </div>
         </div>
       )}
@@ -137,6 +132,7 @@ const SortableBadgeItem = React.memo(function SortableBadgeItem({ badge, blockBa
 });
 
 export const SkillsBlockEditor = ({ block, onUpdate }) => {
+  const [activeTab, setActiveTab] = useState('badges');
   const [activeCategoryForAdd, setActiveCategoryForAdd] = useState(null);
   const [bulkImportTargetCategory, setBulkImportTargetCategory] = useState(null);
   const [bulkInputText, setBulkInputText] = useState('');
@@ -252,120 +248,179 @@ export const SkillsBlockEditor = ({ block, onUpdate }) => {
   }, [searchQuery, selectedFilterCategory]);
 
   return (
-    <div className="space-y-4 text-xs">
-      {/* Layout Options */}
-      <div className="flex flex-wrap items-center justify-between gap-2.5 p-3 rounded-lg border bg-card">
-        <div className="flex items-center gap-2">
-          <input
-            type="checkbox"
-            id="flex-wrap"
-            checked={block.useFlexContainer ?? true}
-            onChange={(e) => onUpdate({ useFlexContainer: e.target.checked })}
-            className="rounded border-input text-blue-600 focus:ring-blue-500 w-4 h-4 cursor-pointer"
-          />
-          <label htmlFor="flex-wrap" className="font-medium text-foreground cursor-pointer flex items-center gap-1.5 text-xs">
-            <LayoutGrid className="w-3.5 h-3.5 text-blue-500" /> Center Flex-Wrap Badges Layout
-          </label>
-        </div>
-
-        <div className="flex items-center gap-1.5 text-xs">
-          <span className="text-muted-foreground">Height:</span>
-          <Input
-            type="number"
-            value={block.badgeHeight || 28}
-            onChange={(e) => onUpdate({ badgeHeight: Number(e.target.value) })}
-            className="w-14 h-7 text-xs text-center"
-            min={18}
-            max={40}
-          />
-          <span className="text-muted-foreground">px</span>
-        </div>
+    <div className="space-y-4 text-sm">
+      {/* Tab Switcher */}
+      <div className="flex p-1 rounded-xl bg-muted/30 border border-border/80 gap-1">
+        {SKILL_TABS.map((tab) => {
+          const TabIcon = tab.icon;
+          return (
+            <button
+              key={tab.id}
+              type="button"
+              onClick={() => setActiveTab(tab.id)}
+              className={`flex-1 py-1.5 px-3 rounded-lg text-xs sm:text-sm font-medium flex items-center justify-center gap-1.5 transition-all cursor-pointer ${
+                activeTab === tab.id
+                  ? 'bg-background text-foreground font-semibold shadow-xs'
+                  : 'text-muted-foreground hover:text-foreground'
+              }`}
+            >
+              <TabIcon className="w-4 h-4 text-blue-500" />
+              <span>{tab.label}</span>
+            </button>
+          );
+        })}
       </div>
 
-      <div className="flex items-center justify-between">
-        <span className="text-muted-foreground text-xs">
-          Categorized badges with drag-and-drop ordering.
-        </span>
-        <Button variant="outline" size="sm" onClick={addCategory} className="h-7 text-xs">
-          <Plus className="w-3 h-3 mr-1" /> Add Category
-        </Button>
-      </div>
+      {/* Tab 1: Badges & Categories */}
+      {activeTab === 'badges' && (
+        <div className="space-y-4 animate-in fade-in">
+          <div className="flex items-center justify-between">
+            <span className="text-muted-foreground text-xs sm:text-sm">
+              Organize skills into clean categorized groups with drag-and-drop.
+            </span>
+            <Button variant="outline" size="sm" onClick={addCategory} className="text-xs sm:text-sm font-medium">
+              <Plus className="w-4 h-4 mr-1" /> Add Category
+            </Button>
+          </div>
 
-      {/* Categories */}
-      <div className="space-y-3.5">
-        {(block.categories || []).map((category) => (
-          <div key={category.id} className="p-3.5 rounded-lg border border-border/90 bg-muted/20 space-y-3">
-            {/* Category Header Row */}
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-              <div className="flex-1 min-w-0">
-                <Input
-                  value={category.name || ''}
-                  onChange={(e) => updateCategoryName(category.id, e.target.value)}
-                  placeholder="Category Name (e.g. Core Languages)"
-                  className="h-8 text-xs font-semibold w-full bg-background"
-                />
+          {/* Categories List */}
+          <div className="space-y-4">
+            {(block.categories || []).map((category) => (
+              <div key={category.id} className="p-4 rounded-2xl border border-border bg-muted/20 space-y-3.5">
+                {/* Category Header Row */}
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                  <div className="flex-1 min-w-0">
+                    <Input
+                      value={category.name || ''}
+                      onChange={(e) => updateCategoryName(category.id, e.target.value)}
+                      placeholder="Category Name (e.g. Core Languages)"
+                      className="font-semibold text-sm w-full bg-background"
+                    />
+                  </div>
+
+                  {/* Action Buttons */}
+                  <div className="flex items-center gap-2 shrink-0 flex-wrap sm:flex-nowrap">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => {
+                        setSelectedFilterCategory('All');
+                        setSearchQuery('');
+                        setActiveCategoryForAdd(category.id);
+                      }}
+                      className="text-xs font-medium"
+                    >
+                      <Search className="w-3.5 h-3.5 mr-1 text-muted-foreground" /> Browse Badges ({POPULAR_SKILL_BADGES.length})
+                    </Button>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => setBulkImportTargetCategory(category.id)}
+                      className="text-xs font-medium"
+                    >
+                      <FileText className="w-3.5 h-3.5 mr-1" /> Bulk Paste
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => setCategoryToDelete(category.id)}
+                      className="h-8 w-8 text-muted-foreground hover:text-red-500 shrink-0"
+                      title="Delete category"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </Button>
+                  </div>
+                </div>
+
+                {/* Badges Drag & Drop Area */}
+                <SortableContext
+                  items={(category.badges || []).map((b) => b.id)}
+                  strategy={rectSortingStrategy}
+                >
+                  <div className="flex flex-wrap gap-2.5 min-h-[50px] p-3 rounded-xl border border-dashed border-border/80 bg-background/60">
+                    {(!category.badges || category.badges.length === 0) ? (
+                      <div className="w-full py-3 text-center text-xs text-muted-foreground">
+                        No badges in this category yet. Click <b>Browse Badges</b> or <b>Bulk Paste</b> above.
+                      </div>
+                    ) : (
+                      category.badges.map((badge) => (
+                        <SortableBadgeItem
+                          key={badge.id}
+                          badge={badge}
+                          blockBadgeStyle={block.badgeStyle}
+                          onUpdate={(updates) => updateBadge(category.id, badge.id, updates)}
+                          onRemove={() => removeBadge(category.id, badge.id)}
+                        />
+                      ))
+                    )}
+                  </div>
+                </SortableContext>
               </div>
+            ))}
+          </div>
+        </div>
+      )}
 
-              {/* Action Buttons */}
-              <div className="flex items-center gap-1.5 shrink-0 flex-wrap sm:flex-nowrap">
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => {
-                    setSelectedFilterCategory('All');
-                    setSearchQuery('');
-                    setActiveCategoryForAdd(category.id);
-                  }}
-                  className="h-7 text-xs px-2"
-                >
-                  <Search className="w-3 h-3 mr-1 text-muted-foreground" /> Browse Badges ({POPULAR_SKILL_BADGES.length})
-                </Button>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => setBulkImportTargetCategory(category.id)}
-                  className="h-7 text-xs px-2"
-                >
-                  <FileText className="w-3 h-3 mr-1" /> Bulk Paste
-                </Button>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  onClick={() => setCategoryToDelete(category.id)}
-                  className="h-7 w-7 text-muted-foreground hover:text-red-500 shrink-0"
-                  title="Delete category"
-                >
-                  <Trash2 className="w-3.5 h-3.5" />
-                </Button>
+      {/* Tab 2: Display & Sizing */}
+      {activeTab === 'display' && (
+        <div className="space-y-4 p-4 rounded-2xl border border-border bg-card animate-in fade-in">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-3.5 rounded-xl border bg-muted/20">
+            <div className="flex items-center gap-3">
+              <input
+                type="checkbox"
+                id="flex-wrap"
+                checked={block.useFlexContainer ?? true}
+                onChange={(e) => onUpdate({ useFlexContainer: e.target.checked })}
+                className="rounded border-input text-blue-600 focus:ring-blue-500 w-4.5 h-4.5 cursor-pointer"
+              />
+              <div>
+                <label htmlFor="flex-wrap" className="font-semibold text-foreground cursor-pointer flex items-center gap-1.5 text-sm">
+                  <LayoutGrid className="w-4 h-4 text-blue-500" /> Center Flex-Wrap Badges Layout
+                </label>
+                <p className="text-xs text-muted-foreground">
+                  Wraps badges into responsive flex rows with equal spacing instead of standard markdown image line breaks
+                </p>
               </div>
             </div>
-
-            {/* Badges Drag & Drop Area */}
-            <SortableContext
-              items={(category.badges || []).map((b) => b.id)}
-              strategy={rectSortingStrategy}
-            >
-              <div className="flex flex-wrap gap-2 min-h-[42px] p-2.5 rounded-md border border-dashed border-border/80 bg-background/60">
-                {(!category.badges || category.badges.length === 0) ? (
-                  <div className="w-full py-2 text-center text-[11px] text-muted-foreground">
-                    No badges in this category yet. Click <b>Browse Badges</b> or <b>Bulk Paste</b> above.
-                  </div>
-                ) : (
-                  category.badges.map((badge) => (
-                    <SortableBadgeItem
-                      key={badge.id}
-                      badge={badge}
-                      blockBadgeStyle={block.badgeStyle}
-                      onUpdate={(updates) => updateBadge(category.id, badge.id, updates)}
-                      onRemove={() => removeBadge(category.id, badge.id)}
-                    />
-                  ))
-                )}
-              </div>
-            </SortableContext>
           </div>
-        ))}
-      </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2 border-t border-border/70">
+            <div>
+              <label className="block text-sm font-semibold text-foreground mb-1.5">
+                Badge Render Height: {block.badgeHeight || 28}px
+              </label>
+              <input
+                type="range"
+                min={18}
+                max={42}
+                value={block.badgeHeight || 28}
+                onChange={(e) => onUpdate({ badgeHeight: Number(e.target.value) })}
+                className="w-full h-2 bg-secondary rounded-lg cursor-pointer mt-2"
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-semibold text-foreground mb-1.5">Badge Style</label>
+              <div className="flex rounded-xl border bg-muted/40 p-0.5">
+                {['flat', 'for-the-badge', 'flat-square'].map((style) => (
+                  <button
+                    key={style}
+                    type="button"
+                    onClick={() => onUpdate({ badgeStyle: style })}
+                    className={`flex-1 py-1.5 rounded-lg text-xs font-medium capitalize transition-all cursor-pointer ${
+                      (block.badgeStyle || 'flat') === style
+                        ? 'bg-background font-bold text-foreground shadow-2xs'
+                        : 'text-muted-foreground hover:text-foreground'
+                    }`}
+                  >
+                    {style.replace(/-/g, ' ')}
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Browse Badges Modal with Category Tabs and Search */}
       <Modal
@@ -373,23 +428,23 @@ export const SkillsBlockEditor = ({ block, onUpdate }) => {
         onClose={() => setActiveCategoryForAdd(null)}
         title="Select Badges to Add"
         description="Click any technology badge to add it. Badges already in this category are marked."
-        maxWidth="max-w-2xl"
+        maxWidth="max-w-3xl"
       >
-        <div className="space-y-3">
+        <div className="space-y-4">
           {/* Search Input */}
           <div className="relative">
-            <Search className="w-4 h-4 absolute left-3 top-2.5 text-muted-foreground" />
+            <Search className="w-4 h-4 absolute left-3.5 top-3 text-muted-foreground" />
             <Input
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search across 90+ tech badges (e.g. Next.js, Docker, PyTorch, GraphQL, Tailwind)..."
-              className="pl-9 h-9 text-xs"
+              className="pl-10 text-sm"
               autoFocus
             />
           </div>
 
-          {/* Category Filter Chips */}
-          <div className="flex items-center gap-1 overflow-x-auto pb-1 no-scrollbar">
+          {/* Categorized Filter Chips */}
+          <div className="flex items-center gap-1.5 overflow-x-auto pb-1.5 no-scrollbar">
             {ALL_CATEGORIES.map((cat) => {
               const isSelected = selectedFilterCategory === cat;
               const count =
@@ -402,7 +457,7 @@ export const SkillsBlockEditor = ({ block, onUpdate }) => {
                   key={cat}
                   type="button"
                   onClick={() => setSelectedFilterCategory(cat)}
-                  className={`px-2.5 py-1 rounded-md text-[11px] font-medium transition-all shrink-0 cursor-pointer ${
+                  className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all shrink-0 cursor-pointer ${
                     isSelected
                       ? 'bg-primary text-primary-foreground font-semibold shadow-2xs'
                       : 'bg-muted/50 hover:bg-muted text-muted-foreground hover:text-foreground border border-border/60'
@@ -414,10 +469,10 @@ export const SkillsBlockEditor = ({ block, onUpdate }) => {
             })}
           </div>
 
-          {/* Badges Grid by Sub-category */}
-          <div className="max-h-[50vh] overflow-y-auto pr-1 space-y-3">
+          {/* Badges Grid */}
+          <div className="max-h-[55vh] overflow-y-auto pr-1 space-y-4">
             {filteredBadges.length === 0 ? (
-              <div className="py-8 text-center text-xs text-muted-foreground">
+              <div className="py-12 text-center text-sm text-muted-foreground">
                 No badges found matching "{searchQuery}". You can use <b>Bulk Paste</b> to add any custom Shields.io badge.
               </div>
             ) : (
@@ -426,11 +481,11 @@ export const SkillsBlockEditor = ({ block, onUpdate }) => {
                 if (badgesInCat.length === 0) return null;
 
                 return (
-                  <div key={catName} className="space-y-1.5">
-                    <h5 className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider">
+                  <div key={catName} className="space-y-2">
+                    <h5 className="text-xs font-bold text-muted-foreground uppercase tracking-wider">
                       {catName}
                     </h5>
-                    <div className="flex flex-wrap gap-1.5">
+                    <div className="flex flex-wrap gap-2">
                       {badgesInCat.map((preset) => {
                         const isAlreadyAdded = activeBadgeNames.has(preset.name.toLowerCase());
                         const previewUrl = buildShieldBadgeUrl({
@@ -445,18 +500,17 @@ export const SkillsBlockEditor = ({ block, onUpdate }) => {
                             key={preset.name}
                             type="button"
                             onClick={() => addBadgeToCategory(activeCategoryForAdd, preset)}
-                            className={`p-1 rounded-md border text-xs transition-all flex items-center gap-1.5 cursor-pointer shadow-2xs ${
+                            className={`p-1.5 rounded-xl border text-xs transition-all flex items-center gap-2 cursor-pointer shadow-2xs ${
                               isAlreadyAdded
                                 ? 'border-blue-500/80 bg-blue-50/60 dark:bg-blue-950/40 ring-1 ring-blue-500/20'
-                                : 'border-border bg-background hover:border-blue-500/60 hover:bg-accent'
+                                : 'border-border/80 bg-background hover:bg-secondary/70 hover:border-border'
                             }`}
-                            title={isAlreadyAdded ? 'Badge is already in this category (Click to add another)' : 'Click to add badge'}
                           >
-                            <img src={previewUrl} alt={preset.name} className="h-5 shrink-0" />
-                            {isAlreadyAdded ? (
-                              <Check className="w-3 h-3 text-blue-500 shrink-0" />
-                            ) : (
-                              <Plus className="w-3 h-3 text-muted-foreground shrink-0" />
+                            <img src={previewUrl} alt={preset.name} className="h-5 object-contain" />
+                            {isAlreadyAdded && (
+                              <span className="text-[10px] text-blue-600 dark:text-blue-400 font-bold">
+                                Added
+                              </span>
                             )}
                           </button>
                         );
@@ -467,15 +521,6 @@ export const SkillsBlockEditor = ({ block, onUpdate }) => {
               })
             )}
           </div>
-
-          <div className="pt-2 border-t border-border flex items-center justify-between">
-            <span className="text-[11px] text-muted-foreground">
-              Showing {filteredBadges.length} of {POPULAR_SKILL_BADGES.length} curated badges
-            </span>
-            <Button size="sm" onClick={() => setActiveCategoryForAdd(null)}>
-              Done
-            </Button>
-          </div>
         </div>
       </Modal>
 
@@ -483,40 +528,36 @@ export const SkillsBlockEditor = ({ block, onUpdate }) => {
       <Modal
         isOpen={Boolean(bulkImportTargetCategory)}
         onClose={() => setBulkImportTargetCategory(null)}
-        title="Bulk Add Shields.io Badges"
-        description="Paste multiple badge URLs, markdown image tags, HTML img tags, or comma-separated tech names"
-        maxWidth="max-w-lg"
+        title="Bulk Import Tech Badges"
+        description="Paste markdown badge images, HTML tags, or comma-separated technology names."
+        maxWidth="max-w-xl"
       >
-        <div className="space-y-3">
+        <div className="space-y-4">
           <textarea
             value={bulkInputText}
             onChange={(e) => setBulkInputText(e.target.value)}
-            placeholder={`<img src="https://img.shields.io/badge/React-20232A?logo=react&logoColor=61DAFB" alt="React" />\nTypeScript, Python, Docker, PostgreSQL, Kubernetes, Redis, Tailwind CSS`}
-            rows={7}
-            className="w-full p-3 rounded-lg border border-input text-xs font-mono bg-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1.5 focus-visible:ring-primary"
+            placeholder="Paste shields.io markdown, img tags, or: React, TypeScript, Python, Docker, PostgreSQL..."
+            rows={6}
+            className="w-full rounded-xl border border-input bg-background/90 p-3.5 text-sm font-mono focus-visible:outline-none focus-visible:ring-1.5 focus-visible:ring-primary"
           />
-          <p className="text-[11px] text-muted-foreground leading-snug">
-            Supports markdown <code className="text-blue-500">![Alt](url)</code>, HTML <code className="text-blue-500">&lt;img src="..."&gt;</code>, direct URLs, or comma-separated names.
-          </p>
-
-          <div className="flex justify-end gap-2 pt-2 border-t border-border">
-            <Button variant="outline" size="sm" onClick={() => setBulkImportTargetCategory(null)}>
+          <div className="flex justify-end gap-2.5">
+            <Button variant="ghost" size="sm" onClick={() => setBulkImportTargetCategory(null)}>
               Cancel
             </Button>
             <Button variant="primary" size="sm" onClick={handleBulkImport}>
-              Parse & Add Badges
+              Import Badges
             </Button>
           </div>
         </div>
       </Modal>
 
-      {/* Confirm Category Deletion Modal */}
+      {/* Delete Category Confirmation */}
       <ConfirmDialog
         isOpen={Boolean(categoryToDelete)}
         onClose={() => setCategoryToDelete(null)}
         onConfirm={() => removeCategory(categoryToDelete)}
-        title="Delete Skills Category"
-        message="Are you sure you want to delete this skills category and all badges inside it?"
+        title="Delete Category"
+        message="Are you sure you want to delete this category and all badges inside it?"
         confirmText="Delete Category"
         isDestructive={true}
       />

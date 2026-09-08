@@ -16,7 +16,7 @@ import { useProfile } from '../../store/profileStore';
 import { BlockCard } from './BlockCard';
 import { AddBlockModal } from './AddBlockModal';
 import { Button } from '../ui/Primitives';
-import { Plus, Layout } from 'lucide-react';
+import { Plus, Layout, Layers } from 'lucide-react';
 
 export const DndBuilder = () => {
   const { state, reorderBlocks, reorderItems, addBlock } = useProfile();
@@ -97,10 +97,22 @@ export const DndBuilder = () => {
   return (
     <div className="space-y-4">
       {/* Top action header for builder */}
-      <div className="flex items-center justify-between pb-2 border-b">
-        <div className="flex items-center gap-2">
-          <Layout className="w-4 h-4 text-blue-500" />
-          <h2 className="text-sm font-semibold">Profile Blocks ({state.blocks.length})</h2>
+      <div className="flex items-center justify-between pb-3 border-b border-border/70">
+        <div className="flex items-center gap-2.5">
+          <div className="p-1.5 rounded-lg bg-blue-500/10 text-blue-500">
+            <Layout className="w-4 h-4" />
+          </div>
+          <div>
+            <div className="flex items-center gap-2">
+              <h2 className="text-sm font-semibold tracking-tight text-foreground">Profile Blocks</h2>
+              <span className="text-[11px] font-medium px-2 py-0.5 rounded-full bg-muted text-muted-foreground">
+                {state.blocks.length}
+              </span>
+            </div>
+            <p className="text-[11px] text-muted-foreground hidden sm:block">
+              Drag to reorder sections or configure individual blocks
+            </p>
+          </div>
         </div>
         <Button
           variant="primary"
@@ -124,8 +136,16 @@ export const DndBuilder = () => {
         >
           <div className="space-y-3.5">
             {state.blocks.length === 0 ? (
-              <div className="text-center py-12 border-2 border-dashed rounded-xl p-6">
-                <p className="text-sm text-muted-foreground mb-3">Your profile has no blocks yet.</p>
+              <div className="text-center py-14 px-6 border-2 border-dashed border-border/80 rounded-2xl bg-card/40 flex flex-col items-center">
+                <div className="p-3 rounded-2xl bg-muted/60 text-muted-foreground mb-3">
+                  <Layers className="w-6 h-6" />
+                </div>
+                <h3 className="text-sm font-semibold text-foreground tracking-tight mb-1">
+                  Your profile has no blocks yet
+                </h3>
+                <p className="text-xs text-muted-foreground max-w-xs mb-4">
+                  Add custom headers, skills, projects, and stats to start building your GitHub profile.
+                </p>
                 <Button variant="primary" size="sm" onClick={() => setIsAddModalOpen(true)}>
                   <Plus className="w-4 h-4 mr-1" /> Add First Block
                 </Button>
@@ -139,13 +159,17 @@ export const DndBuilder = () => {
         </SortableContext>
       </DndContext>
 
-      {/* Bottom Add Block Quick Trigger */}
+      {/* Bottom Add Block Quick Trigger — Linear/SendIt style prominent affordance */}
       {state.blocks.length > 0 && (
         <button
+          type="button"
           onClick={() => setIsAddModalOpen(true)}
-          className="w-full py-3 rounded-xl border-2 border-dashed border-border hover:border-blue-500/60 hover:bg-blue-50/40 dark:hover:bg-blue-950/20 text-muted-foreground hover:text-blue-600 transition-all flex items-center justify-center gap-2 text-xs font-medium cursor-pointer"
+          className="w-full py-3.5 px-4 rounded-2xl border-2 border-dashed border-border/80 hover:border-blue-500/60 bg-muted/10 hover:bg-blue-500/5 text-muted-foreground hover:text-foreground transition-all duration-150 flex items-center justify-center gap-2 text-xs font-medium cursor-pointer group shadow-2xs"
         >
-          <Plus className="w-4 h-4" /> Add Section Block
+          <div className="p-1 rounded-md bg-muted/60 group-hover:bg-blue-500 group-hover:text-white transition-colors">
+            <Plus className="w-3.5 h-3.5" />
+          </div>
+          <span>Add Section Block</span>
         </button>
       )}
 

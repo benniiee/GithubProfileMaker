@@ -7,7 +7,7 @@
 [![Author](https://img.shields.io/badge/Author-benniiee-181717?logo=github&logoColor=white&style=flat-square)](https://github.com/benniiee)
 [![Deployment](https://img.shields.io/badge/Deploy-Vercel-000000?logo=vercel&logoColor=white&style=flat-square)](https://vercel.com/)
 
-A modern, visual, Notion-inspired **GitHub Profile README Builder** built as a pure client-side Single Page Application (SPA). Designed for software engineers, developers, and open-source creators to compose, customize, and export professional, high-impact GitHub profile READMEs with real-time preview and nested drag-and-drop ordering.
+A modern, visual, Notion-inspired **GitHub Profile README Builder** built as a pure client-side Single Page Application (SPA). Designed for developers and open-source creators to compose, customize, and export professional, high-impact GitHub profile READMEs with real-time preview and nested drag-and-drop ordering.
 
 ---
 
@@ -15,26 +15,26 @@ A modern, visual, Notion-inspired **GitHub Profile README Builder** built as a p
 
 - [Overview & Architecture](#-overview--architecture)
 - [Key Features](#-key-features)
-- [Supported Block Types](#-supported-block-types)
+- [Supported Block Types & Customization](#-supported-block-types--customization)
 - [Project Directory Structure](#-project-directory-structure)
 - [Getting Started](#-getting-started)
   - [Prerequisites](#prerequisites)
   - [Installation & Local Development](#installation--local-development)
   - [Production Build](#production-build)
-- [Developer Guide: Extending the Builder](#-developer-guide-extending-the-builder)
-  - [How to Add a New Block Type](#how-to-add-a-new-block-type)
-  - [State Management Architecture](#state-management-architecture)
+- [State Management & Compiler Architecture](#-state-management--compiler-architecture)
+  - [State Management](#state-management)
   - [Compilation Pipeline](#compilation-pipeline)
-- [Code Conventions & Performance Guidelines](#-code-conventions--performance-guidelines)
+  - [Decoupled Input Performance](#decoupled-input-performance)
 - [Deployment](#-deployment)
-- [Author & Credits](#-author--credits)
+- [Author](#-author)
+- [Credits & Acknowledgements](#-credits--acknowledgements)
 - [License](#-license)
 
 ---
 
 ## 🔭 Overview & Architecture
 
-This application operates entirely in the browser (**100% client-side**) with zero external backend dependencies. It combines a Notion-like modular block editor with an instant GitHub-Flavored Markdown (GFM) compiler.
+This application operates entirely in the browser (**100% client-side**) with zero backend dependencies. It combines a Notion-like modular block editor with an instant GitHub-Flavored Markdown (GFM) compiler.
 
 ```
 ┌────────────────────────────────────────────────────────┐
@@ -45,10 +45,11 @@ This application operates entirely in the browser (**100% client-side**) with ze
             ▼                               ▼
  ┌──────────────────────┐        ┌──────────────────────┐
  │   Left Pane:         │        │   Right Pane:        │
- │   Block Builder      │        │   Live Dual Preview  │
+ │   Full-Width Builder │        │   Live Dual Preview  │
  │   - Macro Drag (DND) │        │   - Rendered GFM     │
  │   - Micro Drag (DND) │        │   - Raw Markdown     │
- │   - Block Editors    │        │   - 1-Click Copy     │
+ │   - Categorized Tabs │        │   - Live GFM Status  │
+ │   - Section Settings │        │   - 1-Click Copy     │
  └──────────┬───────────┘        └──────────▲───────────┘
             │                               │
             ▼                               │
@@ -61,37 +62,41 @@ This application operates entirely in the browser (**100% client-side**) with ze
 ```
 
 ### Core Design Principles
-1. **Monochrome-Leaning Dev Tool Aesthetic**: Follows the design philosophy of Linear, Vercel, and Raycast (subtle grayscale palette, hairline borders, consistent radii, zero decorative clutter).
-2. **Decoupled Input Performance**: High-frequency continuous controls (color pickers, sliders) maintain local state and only commit to global state on change settle, avoiding unnecessary re-renders.
-3. **Trustworthy Preview**: Renders markdown using `react-markdown`, `remark-gfm`, and `rehype-raw` with identical styling and container widths to GitHub's native profile renderer.
+1. **Full-Width Fluid Workspace**: Accommodates widescreen monitors with expansive 50/50 dual pane layout, removing artificial max-width constraints for spacious editing.
+2. **Developer-First SaaS Aesthetic**: Inspired by the design standards of Linear, Vercel, and modern developer tooling—featuring a near-charcoal dark theme (`#0d0e11`), hairline borders, and a high-visibility chartreuse/lime CTA button.
+3. **Categorized Tabbed Navigation**: Multi-option section editors (banners, hero bio, skills, and block catalogs) are partitioned into clean, intuitive tabs to eliminate button clutter and visual overwhelm.
+4. **Decoupled Input Performance**: Continuous controls (color pickers, font sliders, dimension ranges) maintain local state and only commit to global state on change settle, ensuring silky 60fps drag-and-drop and instant live feedback.
+5. **Trustworthy GFM Preview**: Markdown is parsed and styled with GitHub's exact typography, block margins, and table styles using `react-markdown`, `remark-gfm`, and `rehype-raw`.
 
 ---
 
 ## ✨ Key Features
 
-- **🧱 Notion-Style Modular Blocks**: Add, duplicate, delete, reorder, and collapse individual profile sections with full state encapsulation.
+- **🧱 Notion-Style Modular Blocks**: Add, duplicate, delete, reorder, and smoothly collapse individual profile sections with full state encapsulation.
 - **🔀 Two-Tier Nested Drag-and-Drop (`@dnd-kit`)**:
   - **Macro Drag**: Reorder top-level sections (Banner, Hero, Rapid Fire, Skills, Projects, Experience, Stats).
   - **Micro Drag**: Reorder items *inside* a section (e.g., individual skill badges, bullet prompts, experience cards, social links).
 - **⚡ Real-Time Markdown & HTML Compiler**: Custom pure JavaScript compiler translating block trees into valid, sanitizable GitHub-Flavored Markdown and HTML fallbacks (`<div align>`, `<table>`, flex wrappers).
-- **🎨 Interactive Custom Modals**: Clean, accessible modal dialogs for block insertion, badge browsing, bulk pasting, and destructive action confirmations.
+- **🌊 Curated Wave & Header Shapes**: Includes 11 wave and organic container styles powered by Capsule Render (`wave`, `waving`, `venom`, `blur`, `pulse`, `transparent`, `soft`, `egg`, `cylinder`, `rounded`, `rect`).
+- **🗂️ Categorized Badge Library**: 90+ searchable tech badges across 8 categories with an interactive modal catalog and bulk importer.
+- **🎨 Interactive Custom Modals**: Accessible modal dialogs for categorized block insertion, badge browsing, bulk pasting, and destructive action confirmations.
 - **💾 Automatic Local Persistence**: Debounced `localStorage` synchronization preserving profile drafts across browser reloads.
 - **📥 One-Click Export**:
   - **Copy Markdown**: Copies ready-to-paste markdown directly to clipboard with instant visual feedback.
-  - **Download `README.md`**: Directly downloads a formatted file.
-- **🌓 Dark / Light Theme Support**: Full dark mode with high contrast and ambient mesh gradient backdrop.
+  - **Download `README.md`**: Directly downloads a clean, formatted file.
+- **🌓 Dark / Light Theme Support**: Full dark mode with high contrast and ambient background mesh gradient.
 
 ---
 
-## 🧩 Supported Block Types
+## 🧩 Supported Block Types & Customization
 
 | Block Type | Description | Key Customization Options |
 | :--- | :--- | :--- |
-| **Banner & Header** | Header image or dynamic waving curve | Capsule Render wave generator (flowing wave, soft organic, convex arch, concave arc, rounded pill, transparent, rect + animations: twinkling, pulsing glow, fade-in, scale-in, static), 11 gradient themes, custom wallpaper URL, Profile views counter (`komarev.com`), TOC summary wrapper. |
-| **Hero Introduction** | Profile intro with avatar & dynamic subtitle | Avatar URL, shapes (`circle`, `rounded`, `square`), size slider, Animated Typing SVG generator (`readme-typing-svg`), social badge links. |
-| **Rapid Fire / About Me** | Highlighted tagline and Q&A bullet points | Bio statement, draggable prompt items (*Working on*, *Learning*, *Ask me about*, *Fun fact*), custom icons/bullets. |
-| **Skills & Tools Grid** | Categorized developer technologies | 90+ curated searchable badges across 8 categories (Languages, Frontend, Backend, Databases, Cloud & DevOps, Testing, Design & IDEs, AI & Data Science), center flex-wrap HTML badges layout, badge height scaling, Bulk Shields.io parser (markdown/HTML/names). |
-| **GitHub Stats & Widgets** | Live GitHub repository & activity cards | Extended stats card, Top languages card, Commit streak counter, 10+ color themes, layout width selector. |
+| **Banner & Header** | Dynamic waving curve or custom header image | Capsule Render wave generator (`wave`, `waving`, `venom`, `blur`, `pulse`, `transparent`, `soft`, `egg`, `cylinder`, `rounded`, `rect` + animations: `twinkling`, `blink`, `fadeIn`, `scaleIn`, `none`), 11 gradient themes, custom color stops, font color, vertical alignment, custom wallpaper URL, Profile views counter (`komarev.com`), TOC summary wrapper. Organized in 4 tabs: *Wave & Content*, *Colors & Theme*, *Fine Tuning*, *Views & Greeting*. |
+| **Hero Introduction** | Profile intro with avatar & dynamic subtitle | Avatar URL, shapes (`circle`, `rounded`, `square`), size slider, Animated Typing SVG generator (`readme-typing-svg`), social badge links. Organized in 3 tabs: *Profile Info*, *Subtitle & Typing*, *Social Links*. |
+| **Rapid Fire / About Me** | Highlighted tagline and Q&A bullet points | Bio statement, draggable prompt items (*Working on*, *Learning*, *Ask me about*, *Fun fact*, *Reach me*, *Collaborate*), custom bullet symbols, and answer values. |
+| **Skills & Tools Grid** | Categorized developer technologies | 90+ curated searchable badges across 8 categories (Languages, Frontend, Backend, Databases, Cloud & DevOps, Testing, Design & IDEs, AI & Data Science), center flex-wrap HTML layout, badge height scaling, Bulk Shields.io parser (markdown/HTML/names). Organized in 2 tabs: *Badges & Categories*, *Display & Sizing*. |
+| **GitHub Stats & Widgets** | Live GitHub repository & activity cards | Extended stats card, Top languages card, Commit streak counter, 10+ color themes (`default`, `radical`, `tokyonight`, `dracula`, `github_dark`, `nord`, `ocean_dark`, `gruvbox`, `synthwave`, `highcontrast`), layout width selector (`48%`, `80%`, `100%`). |
 | **Project Showcase** | Card grid for featured repositories | Responsive 2-col or 3-col `<table>` layout, preview thumbnails, live demo links, repository URLs, tech stack tags. |
 | **Work Experience** | Chronological career timeline | Role, company, dates, location, overview description, reorderable accomplishment bullet points. |
 | **Custom Markdown** | Raw markdown / HTML code node | Freeform GFM editor with one-click stats card snippet insertions. |
@@ -102,39 +107,41 @@ This application operates entirely in the browser (**100% client-side**) with ze
 
 ```
 github-profile-maker/
-├── .github/                     # GitHub workflows and config
-├── docs/                        # UI/UX design references & documentation
+├── .github/                     # GitHub workflows and repository config
+├── docs/                        # Reference documentation
+│   ├── SECURITY.md              # Security policy
+│   └── template-reference.html  # UI design reference
 ├── public/                      # Static assets & favicon
 ├── src/
 │   ├── components/
 │   │   ├── blocks/              # Dedicated Block Editor Components
-│   │   │   ├── BannerBlockEditor.jsx       # Header & Capsule Waving generator
+│   │   │   ├── BannerBlockEditor.jsx       # Header & Capsule Waving generator (tabbed)
 │   │   │   ├── CustomMarkdownEditor.jsx    # Raw GFM snippet editor
 │   │   │   ├── ExperienceBlockEditor.jsx   # Work experience timeline
 │   │   │   ├── GitHubStatsBlockEditor.jsx  # GitHub stats & streak cards
-│   │   │   ├── HeroBlockEditor.jsx         # Avatar, Typing SVG, social badges
+│   │   │   ├── HeroBlockEditor.jsx         # Avatar, Typing SVG, social badges (tabbed)
 │   │   │   ├── ProjectsBlockEditor.jsx     # Project showcase table grid
 │   │   │   ├── RapidFireBlockEditor.jsx    # Draggable Q&A bullet points
-│   │   │   └── SkillsBlockEditor.jsx       # Categorized badges (90+) & bulk importer
+│   │   │   └── SkillsBlockEditor.jsx       # Categorized badges (90+) & bulk importer (tabbed)
 │   │   ├── builder/             # Builder Canvas & Drag-and-Drop Container
-│   │   │   ├── AddBlockModal.jsx           # Section block selection dialog
+│   │   │   ├── AddBlockModal.jsx           # Section block selection dialog (categorized)
 │   │   │   ├── BlockCard.jsx               # Individual draggable block shell
 │   │   │   ├── BlockSettings.jsx           # Per-block alignment & header settings
 │   │   │   └── DndBuilder.jsx              # DnD Context handling macro & micro drags
 │   │   ├── layout/              # App Shell & Navigation
 │   │   │   ├── Header.jsx                  # Top navigation, templates, export actions
 │   │   │   ├── Footer.jsx                  # Bottom footer with author credit
-│   │   │   └── SplitView.jsx               # Responsive dual-pane layout container
+│   │   │   └── SplitView.jsx               # Responsive full-width dual-pane container
 │   │   ├── preview/             # Output Preview Components
 │   │   │   ├── LivePreview.jsx             # Rendered GitHub markdown view
 │   │   │   └── RawMarkdownView.jsx         # Line-numbered raw markdown code view
 │   │   └── ui/                  # Reusable UI Primitives
 │   │       ├── DebouncedInputs.jsx         # Decoupled Color & Range controls
-│   │       ├── Modal.jsx                   # Linear-style Modal & ConfirmDialog
+│   │       ├── Modal.jsx                   # Modal dialogs & ConfirmDialog
 │   │       └── Primitives.jsx              # Button, Input, Textarea, Badge
 │   ├── lib/                     # Utilities, Compiler, and Presets
 │   │   ├── compileMarkdown.js   # Pure JS Markdown/HTML compiler engine
-│   │   ├── defaultState.js      # Starter templates (Modern, Alex, DevOps, Minimal)
+│   │   ├── defaultState.js      # Starter templates (Modern, Developer, Minimal)
 │   │   ├── storage.js           # LocalStorage serialization & schema handling
 │   │   └── utils.js             # Shields.io badge builder, ID generator, parsers
 │   ├── store/                   # State Management
@@ -161,8 +168,8 @@ github-profile-maker/
 
 1. **Clone the repository:**
    ```bash
-   git clone <repository-url>
-   cd github-profile-maker
+   git clone https://github.com/benniiee/GithubProfileMaker.git
+   cd GithubProfileMaker
    ```
 
 2. **Install dependencies:**
@@ -190,46 +197,9 @@ npm run preview
 
 ---
 
-## 🛠️ Developer Guide: Extending the Builder
+## 🛠️ State Management & Compiler Architecture
 
-### How to Add a New Block Type
-
-Adding a new section block requires 4 simple steps:
-
-1. **Define the Data Schema**:
-   Add default block properties in `addBlock()` inside [`src/store/profileStore.jsx`](file:///c:/Users/Ash/Desktop/Website/github-profile-maker/src/store/profileStore.jsx):
-   ```javascript
-   else if (type === 'custom-widget') {
-     newBlock = {
-       id: generateId('block_widget'),
-       type: 'custom-widget',
-       title: 'My Custom Widget',
-       hideHeader: false,
-       alignment: 'left',
-       isCollapsed: false,
-       // Custom properties...
-     };
-   }
-   ```
-
-2. **Create the Block Editor Component**:
-   Create `src/components/blocks/CustomWidgetEditor.jsx` using primitives from `src/components/ui/Primitives.jsx`.
-
-3. **Add Compiler Logic**:
-   In [`src/lib/compileMarkdown.js`](file:///c:/Users/Ash/Desktop/Website/github-profile-maker/src/lib/compileMarkdown.js), add a case in the switch statement and write a pure compiler function returning the markdown string:
-   ```javascript
-   case 'custom-widget':
-     sectionMd = compileCustomWidget(block);
-     break;
-   ```
-
-4. **Register in UI**:
-   - Register the component and icon in [`src/components/builder/BlockCard.jsx`](file:///c:/Users/Ash/Desktop/Website/github-profile-maker/src/components/builder/BlockCard.jsx).
-   - Add the block entry in [`src/components/builder/AddBlockModal.jsx`](file:///c:/Users/Ash/Desktop/Website/github-profile-maker/src/components/builder/AddBlockModal.jsx).
-
----
-
-### State Management Architecture
+### State Management
 
 All profile state is centralized in `src/store/profileStore.jsx` and accessed via the `useProfile()` custom hook:
 
@@ -248,17 +218,19 @@ const {
 } = useProfile();
 ```
 
----
+### Compilation Pipeline
 
-## ⚡ Code Conventions & Performance Guidelines
+The compiler (`src/lib/compileMarkdown.js`) is a pure functional pipeline:
+- Takes the current `blocks` array as input.
+- Iterates over each block and applies dedicated formatters (`compileBanner`, `compileHero`, `compileSkills`, `compileProjects`, etc.).
+- Formats alignment with standard GitHub `<div align="...">` wrappers.
+- Emits clean, copy-ready GitHub-Flavored Markdown (GFM).
 
-When contributing to this repository, adhere to the guidelines established in `javascript_code_practices.txt` and `docs/ui-ux-design-reference.md`:
+### Decoupled Input Performance
 
-1. **Pure JavaScript / JSX**: Keep all code in pure `.js` and `.jsx` syntax without TypeScript overhead.
-2. **Decouple Continuous Inputs**: Never pipe high-frequency drag events directly to `updateBlock()`. Use `ColorInput` or `DebouncedSlider` from `DebouncedInputs.jsx`.
-3. **Memoize Sortable Items**: Wrap sortable child items and cards in `React.memo` to keep DnD interactions at 60fps.
-4. **Stable Unique Keys**: Always use `generateId()` for keys—never use array indices in reorderable lists.
-5. **No Dynamic Tailwind Interpolation**: Never build class names dynamically with template literals like `` `bg-${color}-500` ``. Use inline `style` for arbitrary user-defined colors.
+To prevent UI stutter during intensive operations:
+- High-frequency inputs (sliders and color pickers) use `DebouncedInputs.jsx` to update local state immediately while deferring global store writes until interaction settles.
+- Sortable list items and cards are memoized with `React.memo` to sustain 60fps drag-and-drop frame rates.
 
 ---
 
@@ -272,13 +244,30 @@ This repository is pre-configured for instant deployment on [Vercel](https://ver
 - **Install Command**: `npm install`
 
 ### GitHub Pages / Static Hosting
-Because the project is 100% static client-side, the generated `dist/` folder can be served by any static web server (GitHub Pages, Cloudflare Pages, Netlify, AWS S3).
+Because the project is 100% client-side, the generated `dist/` directory can be served by any static host (GitHub Pages, Cloudflare Pages, Netlify, AWS S3).
 
 ---
 
-## 👨‍💻 Author & Credits
+## 👨‍💻 Author
 
 Created and maintained by **[benniiee](https://github.com/benniiee)**.
+
+---
+
+## 💖 Credits & Acknowledgements
+
+This project is made possible thanks to these open-source libraries, APIs, and community tools:
+
+- **[Shields.io](https://shields.io)** — Metadata badges for open-source projects.
+- **[Capsule Render](https://github.com/kyechan99/capsule-render)** by [@kyechan99](https://github.com/kyechan99) — Dynamic waving curve and organic shape SVG header generator.
+- **[GitHub Readme Stats](https://github.com/anuraghazra/github-readme-stats)** by [@anuraghazra](https://github.com/anuraghazra) — Dynamically generated GitHub stats and top languages cards.
+- **[GitHub Readme Streak Stats](https://github.com/DenverCoder1/github-readme-streak-stats)** by [@DenverCoder1](https://github.com/DenverCoder1) — Contribution streak counters.
+- **[Readme Typing SVG](https://github.com/DenverCoder1/readme-typing-svg)** by [@DenverCoder1](https://github.com/DenverCoder1) — Animated typing effect SVGs.
+- **[GitHub Profile Views Counter](https://github.com/antonkomarev/github-profile-views-counter)** by [@antonkomarev](https://github.com/antonkomarev) — Profile view counter badges.
+- **[Simple Icons](https://simpleicons.org)** — SVG brand icons for popular tech stacks and developer tools.
+- **[@dnd-kit](https://dndkit.com)** — Performant, lightweight drag-and-drop toolkit for React.
+- **[Lucide Icons](https://lucide.dev)** — Clean, consistent open-source icons.
+- **[Tailwind CSS](https://tailwindcss.com)** & **[Vite](https://vitejs.dev)** — Modern, ultra-fast frontend styling and build tooling.
 
 ---
 

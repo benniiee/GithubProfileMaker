@@ -209,16 +209,16 @@ export const ProjectsBlockEditor = ({ block, onUpdate }) => {
   };
 
   return (
-    <div className="space-y-3.5 text-xs">
-      <div className="flex items-center justify-between gap-2">
-        <div className="flex items-center gap-2">
-          <span className="text-muted-foreground">Grid Layout:</span>
-          <div className="flex rounded-md border bg-muted/40 p-0.5">
+    <div className="space-y-4 text-sm">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-3 rounded-xl border bg-muted/20">
+        <div className="flex items-center gap-3">
+          <span className="font-semibold text-foreground text-sm">Grid Columns:</span>
+          <div className="flex rounded-xl border bg-background p-0.5">
             <button
               type="button"
               onClick={() => onUpdate({ layout: '2-col' })}
-              className={`px-2 py-0.5 rounded text-[11px] font-medium transition-all cursor-pointer ${
-                block.layout === '2-col' ? 'bg-background shadow-2xs font-semibold text-foreground' : 'text-muted-foreground'
+              className={`px-3 py-1 rounded-lg text-xs sm:text-sm font-medium transition-all cursor-pointer ${
+                block.layout === '2-col' ? 'bg-secondary shadow-2xs font-semibold text-foreground' : 'text-muted-foreground'
               }`}
             >
               2 Columns
@@ -226,8 +226,8 @@ export const ProjectsBlockEditor = ({ block, onUpdate }) => {
             <button
               type="button"
               onClick={() => onUpdate({ layout: '3-col' })}
-              className={`px-2 py-0.5 rounded text-[11px] font-medium transition-all cursor-pointer ${
-                block.layout === '3-col' ? 'bg-background shadow-2xs font-semibold text-foreground' : 'text-muted-foreground'
+              className={`px-3 py-1 rounded-lg text-xs sm:text-sm font-medium transition-all cursor-pointer ${
+                block.layout === '3-col' ? 'bg-secondary shadow-2xs font-semibold text-foreground' : 'text-muted-foreground'
               }`}
             >
               3 Columns
@@ -235,13 +235,13 @@ export const ProjectsBlockEditor = ({ block, onUpdate }) => {
           </div>
         </div>
 
-        <Button variant="outline" size="sm" onClick={addProject} className="h-7 text-xs">
-          <Plus className="w-3 h-3 mr-1" /> Add Project Card
+        <Button variant="outline" size="sm" onClick={addProject} className="text-xs sm:text-sm font-medium">
+          <Plus className="w-4 h-4 mr-1" /> Add Project Card
         </Button>
       </div>
 
       <SortableContext items={(block.items || []).map((it) => it.id)} strategy={verticalListSortingStrategy}>
-        <div className="space-y-2.5">
+        <div className="space-y-3">
           {(block.items || []).map((item) => (
             <SortableProjectCard
               key={item.id}

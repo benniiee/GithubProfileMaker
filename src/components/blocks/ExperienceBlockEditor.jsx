@@ -235,18 +235,18 @@ export const ExperienceBlockEditor = ({ block, onUpdate }) => {
   };
 
   return (
-    <div className="space-y-3.5 text-xs">
+    <div className="space-y-4 text-sm">
       <div className="flex items-center justify-between">
-        <span className="text-muted-foreground text-xs">
+        <span className="text-muted-foreground text-xs sm:text-sm">
           Chronological roles compiled into a clean markdown timeline.
         </span>
-        <Button variant="outline" size="sm" onClick={addExperienceItem} className="h-7 text-xs">
-          <Plus className="w-3 h-3 mr-1" /> Add Position
+        <Button variant="outline" size="sm" onClick={addExperienceItem} className="text-xs sm:text-sm font-medium">
+          <Plus className="w-4 h-4 mr-1" /> Add Position
         </Button>
       </div>
 
       <SortableContext items={(block.items || []).map((it) => it.id)} strategy={verticalListSortingStrategy}>
-        <div className="space-y-2.5">
+        <div className="space-y-3">
           {(block.items || []).map((item) => (
             <SortableExperienceItem
               key={item.id}

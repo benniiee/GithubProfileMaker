@@ -26,17 +26,17 @@ export const CustomMarkdownEditor = ({ block, onUpdate }) => {
   };
 
   return (
-    <div className="space-y-3 text-xs">
-      <div className="flex flex-wrap items-center gap-1.5 p-2 rounded-lg bg-muted/40 border">
-        <span className="text-[11px] text-muted-foreground flex items-center gap-1 mr-1">
-          <Sparkles className="w-3 h-3 text-blue-500" /> Quick Snippets:
+    <div className="space-y-4 text-sm">
+      <div className="flex flex-wrap items-center gap-2 p-3 rounded-xl bg-muted/40 border border-border">
+        <span className="text-xs font-semibold text-muted-foreground flex items-center gap-1.5 mr-1">
+          <Sparkles className="w-4 h-4 text-blue-500" /> Quick Snippets:
         </span>
         {SNIPPETS.map((item) => (
           <button
             key={item.name}
             type="button"
             onClick={() => insertSnippet(item.snippet)}
-            className="px-2 py-1 rounded bg-background hover:bg-secondary text-[11px] font-medium border text-foreground transition-all cursor-pointer"
+            className="px-3 py-1 rounded-lg bg-background hover:bg-secondary text-xs sm:text-sm font-medium border border-border text-foreground transition-all cursor-pointer shadow-2xs"
           >
             + {item.name}
           </button>
@@ -44,15 +44,15 @@ export const CustomMarkdownEditor = ({ block, onUpdate }) => {
       </div>
 
       <div>
-        <label className="block font-medium mb-1 text-muted-foreground">Raw Markdown / HTML Content</label>
+        <label className="block font-semibold mb-1.5 text-foreground text-sm">Raw Markdown / HTML Content</label>
         <Textarea
           value={block.content || ''}
           onChange={(e) => onUpdate({ content: e.target.value })}
           placeholder="Write standard markdown or HTML..."
-          rows={7}
-          className="text-xs font-mono"
+          rows={8}
+          className="text-sm font-mono leading-relaxed"
         />
-        <p className="text-[11px] text-muted-foreground mt-1">
+        <p className="text-xs text-muted-foreground mt-1.5">
           Supports GitHub Flavored Markdown (GFM), HTML tables, alignment tags, and widgets.
         </p>
       </div>

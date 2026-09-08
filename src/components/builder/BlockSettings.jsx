@@ -27,30 +27,31 @@ export const BlockSettings = ({ block, onUpdate }) => {
         size="icon"
         onClick={() => setIsOpen(!isOpen)}
         title="Block Settings (Alignment, Header, Style)"
-        className={`h-7 w-7 ${isOpen ? 'bg-accent text-accent-foreground' : 'text-muted-foreground hover:text-foreground'}`}
+        className={`h-8 w-8 ${isOpen ? 'bg-accent text-accent-foreground' : 'text-muted-foreground hover:text-foreground'}`}
       >
-        <Settings className="h-3.5 w-3.5" />
+        <Settings className="h-4 w-4" />
       </Button>
 
       {isOpen && (
-        <div className="absolute right-0 top-full mt-2 w-72 rounded-lg border bg-popover p-4 shadow-xl z-50 text-popover-foreground animate-in fade-in zoom-in-95 duration-100">
-          <div className="flex items-center justify-between pb-2 mb-3 border-b">
-            <h4 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground flex items-center gap-1.5">
-              <Settings className="w-3.5 h-3.5" /> Block Settings
+        <div className="absolute right-0 top-full mt-2 w-80 rounded-2xl border border-border bg-popover p-4 shadow-2xl z-50 text-popover-foreground animate-in fade-in zoom-in-95 duration-100">
+          <div className="flex items-center justify-between pb-2 mb-3 border-b border-border/70">
+            <h4 className="text-xs font-bold uppercase tracking-widest text-muted-foreground flex items-center gap-1.5">
+              <Settings className="w-3.5 h-3.5 text-blue-500" /> Block Settings
             </h4>
             <button
+              type="button"
               onClick={() => setIsOpen(false)}
-              className="text-xs text-muted-foreground hover:text-foreground cursor-pointer"
+              className="text-xs text-muted-foreground hover:text-foreground cursor-pointer p-1"
             >
               ✕
             </button>
           </div>
 
-          <div className="space-y-4 text-xs">
+          <div className="space-y-4 text-sm">
             {/* Header Title & Visibility */}
             {block.type !== 'hero' && (
               <div>
-                <label className="block text-xs font-medium mb-1.5 text-foreground">
+                <label className="block text-xs font-semibold mb-1.5 text-foreground">
                   Section Header
                 </label>
                 <div className="flex items-center gap-2">
@@ -58,40 +59,41 @@ export const BlockSettings = ({ block, onUpdate }) => {
                     value={block.title || ''}
                     onChange={(e) => onUpdate({ title: e.target.value })}
                     placeholder="Section Title"
-                    className="h-8 text-xs"
+                    className="text-sm"
                   />
                   <Button
                     variant="outline"
                     size="icon"
                     onClick={() => onUpdate({ hideHeader: !block.hideHeader })}
                     title={block.hideHeader ? 'Header hidden in output' : 'Header visible in output'}
-                    className={`h-8 w-8 shrink-0 ${block.hideHeader ? 'text-muted-foreground bg-muted' : 'text-blue-500'}`}
+                    className={`h-9.5 w-9.5 shrink-0 ${block.hideHeader ? 'text-muted-foreground bg-muted' : 'text-blue-500'}`}
                   >
-                    {block.hideHeader ? <EyeOff className="h-3.5 w-3.5" /> : <Eye className="h-3.5 w-3.5" />}
+                    {block.hideHeader ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                   </Button>
                 </div>
                 {block.hideHeader && (
-                  <p className="text-[10px] text-amber-500 mt-1">Header heading will be hidden in markdown.</p>
+                  <p className="text-xs text-amber-500 mt-1">Header heading will be hidden in markdown.</p>
                 )}
               </div>
             )}
 
             {/* Alignment */}
             <div>
-              <label className="block text-xs font-medium mb-1.5 text-foreground">
+              <label className="block text-xs font-semibold mb-1.5 text-foreground">
                 Block Content Alignment
               </label>
-              <div className="grid grid-cols-3 gap-1 bg-muted/60 p-1 rounded-md">
+              <div className="grid grid-cols-3 gap-1 bg-muted/50 p-1 rounded-xl border border-border/60">
                 {['left', 'center', 'right'].map((align) => {
                   const isActive = block.alignment === align;
                   const Icon = align === 'left' ? AlignLeft : align === 'center' ? AlignCenter : AlignRight;
                   return (
                     <button
                       key={align}
+                      type="button"
                       onClick={() => onUpdate({ alignment: align })}
-                      className={`flex items-center justify-center gap-1.5 py-1.5 rounded text-xs font-medium capitalize transition-all cursor-pointer ${
+                      className={`flex items-center justify-center gap-1.5 py-1.5 rounded-lg text-xs font-medium capitalize transition-all cursor-pointer ${
                         isActive
-                          ? 'bg-background text-foreground shadow-sm'
+                          ? 'bg-background text-foreground shadow-2xs font-semibold'
                           : 'text-muted-foreground hover:text-foreground'
                       }`}
                     >
@@ -105,13 +107,13 @@ export const BlockSettings = ({ block, onUpdate }) => {
 
             {/* Badge Style */}
             <div>
-              <label className="block text-xs font-medium mb-1.5 text-foreground flex items-center gap-1">
-                <Shield className="w-3.5 h-3.5" /> Badge Style
+              <label className="block text-xs font-semibold mb-1.5 text-foreground flex items-center gap-1">
+                <Shield className="w-3.5 h-3.5 text-blue-500" /> Badge Style
               </label>
               <select
                 value={block.badgeStyle || 'flat'}
                 onChange={(e) => onUpdate({ badgeStyle: e.target.value })}
-                className="w-full h-8 rounded-md border border-input bg-background px-2 text-xs focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+                className="w-full h-9.5 rounded-xl border border-input bg-background px-3 text-sm focus-visible:outline-none focus-visible:ring-1.5 focus-visible:ring-primary"
               >
                 <option value="flat">flat (Default)</option>
                 <option value="for-the-badge">for-the-badge (Bold / Large)</option>
@@ -125,4 +127,3 @@ export const BlockSettings = ({ block, onUpdate }) => {
     </div>
   );
 };
-

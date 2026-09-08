@@ -53,6 +53,19 @@ const BLOCK_TYPE_NAMES = {
   'custom-markdown': 'Custom Markdown',
 };
 
+/* Per-type accent color for the icon pill */
+const BLOCK_ACCENT = {
+  banner: 'bg-violet-100 text-violet-600 dark:bg-violet-900/30 dark:text-violet-400',
+  hero: 'bg-blue-100 text-blue-600 dark:bg-blue-900/30 dark:text-blue-400',
+  'rapid-fire': 'bg-amber-100 text-amber-600 dark:bg-amber-900/30 dark:text-amber-400',
+  'about-me': 'bg-amber-100 text-amber-600 dark:bg-amber-900/30 dark:text-amber-400',
+  skills: 'bg-emerald-100 text-emerald-600 dark:bg-emerald-900/30 dark:text-emerald-400',
+  projects: 'bg-cyan-100 text-cyan-600 dark:bg-cyan-900/30 dark:text-cyan-400',
+  experience: 'bg-orange-100 text-orange-600 dark:bg-orange-900/30 dark:text-orange-400',
+  'github-stats': 'bg-indigo-100 text-indigo-600 dark:bg-indigo-900/30 dark:text-indigo-400',
+  'custom-markdown': 'bg-slate-100 text-slate-600 dark:bg-slate-800/60 dark:text-slate-400',
+};
+
 export const BlockCard = React.memo(function BlockCard({ block }) {
   const { updateBlock, duplicateBlock, removeBlock, toggleBlockCollapse } = useProfile();
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
@@ -69,6 +82,7 @@ export const BlockCard = React.memo(function BlockCard({ block }) {
   };
 
   const Icon = BLOCK_ICONS[block.type] || FileCode2;
+  const accentClass = BLOCK_ACCENT[block.type] || 'bg-secondary text-primary';
   const isCollapsed = block.isCollapsed ?? false;
 
   return (
@@ -76,83 +90,86 @@ export const BlockCard = React.memo(function BlockCard({ block }) {
       <div
         ref={setNodeRef}
         style={style}
-        className={`rounded-xl border bg-card text-card-foreground shadow-xs transition-shadow hover:shadow-md ${
-          isDragging ? 'border-blue-500 shadow-lg ring-2 ring-blue-500/20' : 'border-border'
+        className={`rounded-2xl border bg-card text-card-foreground shadow-xs transition-all duration-200 hover:shadow-md ${
+          isDragging ? 'border-blue-500 shadow-lg ring-2 ring-blue-500/20' : 'border-border/70'
         }`}
       >
         {/* Top Header Row */}
-        <div className="flex items-center justify-between p-3 select-none bg-muted/20 rounded-t-xl border-b border-border/80">
-          <div className="flex items-center gap-2 flex-1 min-w-0 pr-2">
+        <div className="flex items-center justify-between px-3.5 py-3 select-none bg-muted/25 rounded-t-2xl border-b border-border/60">
+          <div className="flex items-center gap-2.5 flex-1 min-w-0 pr-2">
             {/* Drag Handle */}
             <button
               {...attributes}
               {...listeners}
-              className="text-muted-foreground/40 hover:text-foreground cursor-grab active:cursor-grabbing p-1 rounded hover:bg-muted shrink-0"
+              className="text-muted-foreground/30 hover:text-muted-foreground cursor-grab active:cursor-grabbing p-1 rounded-lg hover:bg-muted/60 shrink-0 transition-colors"
               title="Drag to reorder section"
             >
               <GripVertical className="w-4 h-4" />
             </button>
 
-            {/* Block Type Badge */}
-            <div className="p-1.5 rounded-md bg-secondary text-primary shrink-0">
+            {/* Block Type Icon — colored pill */}
+            <div className={`p-2 rounded-xl shrink-0 ${accentClass}`}>
               <Icon className="w-4 h-4" />
             </div>
 
-            <div className="flex items-baseline gap-2 truncate min-w-0">
-              <span className="font-semibold text-xs tracking-tight truncate">
+            <div className="flex items-center gap-2.5 truncate min-w-0">
+              <span className="font-semibold text-sm sm:text-base tracking-tight truncate text-foreground">
                 {block.title || BLOCK_TYPE_NAMES[block.type]}
               </span>
-              <span className="text-[10px] text-muted-foreground hidden sm:inline shrink-0">
-                ({BLOCK_TYPE_NAMES[block.type]})
+              {/* Type pill badge */}
+              <span className="text-xs text-muted-foreground/80 bg-muted/70 px-2 py-0.5 rounded-md font-mono hidden sm:inline shrink-0 tracking-wide">
+                {block.type}
               </span>
             </div>
           </div>
 
           {/* Action Controls */}
           <div className="flex items-center gap-1 shrink-0">
-            {/* Settings Popover */}
             <BlockSettings
               block={block}
               onUpdate={(updates) => updateBlock(block.id, updates)}
             />
 
-            {/* Duplicate */}
             <Button
               variant="ghost"
               size="icon"
               onClick={() => duplicateBlock(block.id)}
-              className="h-7 w-7 text-muted-foreground hover:text-foreground"
+              className="h-8 w-8 text-muted-foreground hover:text-foreground"
               title="Duplicate Block"
             >
-              <Copy className="w-3.5 h-3.5" />
+              <Copy className="w-4 h-4" />
             </Button>
 
-            {/* Delete — Opens Modal */}
             <Button
               variant="ghost"
               size="icon"
               onClick={() => setShowDeleteConfirm(true)}
-              className="h-7 w-7 text-muted-foreground hover:text-red-500"
+              className="h-8 w-8 text-muted-foreground hover:text-red-500"
               title="Delete Block"
             >
-              <Trash2 className="w-3.5 h-3.5" />
+              <Trash2 className="w-4 h-4" />
             </Button>
 
-            {/* Collapse / Expand */}
             <Button
               variant="ghost"
               size="icon"
               onClick={() => toggleBlockCollapse(block.id)}
-              className="h-7 w-7 text-muted-foreground hover:text-foreground ml-0.5"
+              className="h-8 w-8 text-muted-foreground hover:text-foreground ml-0.5"
               title={isCollapsed ? 'Expand Block' : 'Collapse Block'}
             >
-              {isCollapsed ? <ChevronRight className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+              <ChevronDown
+                className={`w-4 h-4 transition-transform duration-200 ${isCollapsed ? '-rotate-90' : 'rotate-0'}`}
+              />
             </Button>
           </div>
         </div>
 
-        {/* Block Body Content */}
-        {!isCollapsed && (
+        {/* Block Body — smooth CSS collapse */}
+        <div
+          className={`overflow-hidden transition-all duration-200 ease-in-out ${
+            isCollapsed ? 'max-h-0' : 'max-h-[9999px]'
+          }`}
+        >
           <div className="p-3.5 sm:p-4">
             {block.type === 'banner' && (
               <BannerBlockEditor
@@ -203,7 +220,7 @@ export const BlockCard = React.memo(function BlockCard({ block }) {
               />
             )}
           </div>
-        )}
+        </div>
       </div>
 
       {/* Delete Confirmation Modal */}
